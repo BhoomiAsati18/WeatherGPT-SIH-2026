@@ -2,7 +2,7 @@
  * WeatherGPT - Chat Orchestration & API Handler
  */
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'https://weathergpt-sih-2026-1.onrender.com/api';
 
 class ChatController {
   constructor() {

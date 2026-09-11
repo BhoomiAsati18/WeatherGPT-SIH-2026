@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeatherGPT - Conversational Weather & Disaster Intelligence (SIH26068)</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS for Live Doppler Radar -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-default">
+
+  <!-- Top Alert Banner (NDMA / Severe Disaster Ticker) -->
+  <div id="disasterTicker" class="disaster-ticker">
+    <div class="ticker-content">
+      <span class="ticker-badge">🚨 LIVE ALERT</span>
+      <span id="tickerText" class="ticker-text">IMD Nowcast: Isolated Thunderstorms with gusty winds (35-45 km/h) over Malwa & Central Plateau. Stay updated.</span>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-icon">🌤️</span>
+        <div class="logo-text">
+          <h1>WeatherGPT</h1>
+          <span class="badge-sih">SIH26068 • MoES / IMD</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Location Quick Switch -->
+    <div class="header-center">
+      <div class="location-pill">
+        <span class="icon">📍</span>
+        <select id="citySelector" class="city-dropdown">
+          <option value="Indore" selected>Indore, MP</option>
+          <option value="Bhopal">Bhopal, MP</option>
+          <option value="Delhi">New Delhi, DL</option>
+          <option value="Mumbai">Mumbai, MH</option>
+          <option value="Pune">Pune, MH</option>
+          <option value="Jaipur">Jaipur, RJ</option>
+          <option value="Bengaluru">Bengaluru, KA</option>
+          <option value="Kolkata">Kolkata, WB</option>
+          <option value="Chennai">Chennai, TN</option>
+          <option value="Lucknow">Lucknow, UP</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Language & Status -->
+    <div class="header-right">
+      <div class="lang-selector">
+        <button class="lang-btn active" data-lang="hinglish">Hinglish</button>
+        <button class="lang-btn" data-lang="hindi">हिन्दी</button>
+        <button class="lang-btn" data-lang="english">English</button>
+      </div>
+      <div class="status-indicator online" id="apiStatus" title="FastAPI Engine Connected">
+        <span class="status-dot"></span>
+        <span class="status-label">Online</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Persona Selection Bar -->
+  <nav class="persona-bar">
+    <span class="persona-label">Target Persona:</span>
+    <div class="persona-chips">
+      <button class="persona-chip active" data-persona="citizen">
+        <span class="chip-icon">🏙️</span>
+        <span class="chip-text">Nagrik (Citizen)</span>
+      </button>
+      <button class="persona-chip" data-persona="farmer">
+        <span class="chip-icon">🌾</span>
+        <span class="chip-text">Kisan (Farmer Agro)</span>
+      </button>
+      <button class="persona-chip" data-persona="traveler">
+        <span class="chip-icon">✈️</span>
+        <span class="chip-text">Yatri (Traveler Safe)</span>
+      </button>
+      <button class="persona-chip" data-persona="disaster_officer">
+        <span class="chip-icon">🚨</span>
+        <span class="chip-text">Disaster Officer</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Application Container -->
+  <main class="app-main">
+
+    <!-- Left Column: Conversational AI Chat -->
+    <section class="chat-section">
+      <div class="chat-header">
+        <div class="chat-title">
+          <h2>💬 Talk to LIX Weather Assistant</h2>
+          <span class="grounded-badge" title="AI answers only from verified meteorological datasets">
+            🛡️ Grounded Data • No Hallucination
+          </span>
+        </div>
+        <button id="clearChatBtn" class="btn-text-sm" title="Clear Conversation">Clear</button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div id="chatMessages" class="chat-messages">
+        <!-- Initial Welcome Message -->
+        <div class="message assistant-msg">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-body">
+            <div class="msg-text">
+              Namaste! Main **WeatherGPT (LIX)** hoon — aapka AI Weather & Disaster Assistant. 
+              <br><br>
+              Aap mujhse aam bhasha mein pooch sakte hain:
+              <ul class="welcome-list">
+                <li>*"Kal Indore mein baarish hogi kya?"*</li>
+                <li>*"Kya khet mein kal sinchai (irrigation) karni chahiye?"*</li>
+                <li>*"Kal Mumbai highway travel ke liye safe hai?"*</li>
+                <li>*"Kya mere area ke liye koi severe weather alert hai?"*</li>
+              </ul>
+            </div>
+            <div class="msg-meta">
+              <span>Verified MoES / Open-Meteo Feed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Suggestion Followup Chips -->
+      <div id="suggestionChips" class="suggestion-chips">
+        <button class="sug-chip" data-query="Kal Indore mein baarish hogi?">🌧️ Kal rain hogi?</button>
+        <button class="sug-chip" data-query="Active disaster alerts check karo">🚨 Active alerts?</button>
+        <button class="sug-chip" data-query="Khet me irrigation kab karu?">🌾 Kisan irrigation advisory?</button>
+        <button class="sug-chip" data-query="Indore 7-day forecast aur temperature">📅 7-Day Forecast</button>
+      </div>
+
+      <!-- Chat Input Area with Voice Support -->
+      <div class="chat-input-container">
+        <form id="chatForm" class="chat-form">
+          <button type="button" id="voiceMicBtn" class="btn-icon voice-mic-btn" title="Click to speak (Voice Recognition)">
+            <span class="mic-icon">🎙️</span>
+            <span class="listening-wave"></span>
+          </button>
+          
+          <input 
+            type="text" 
+            id="chatInput" 
+            class="chat-input" 
+            placeholder="Poochein: 'Kal Indore mein baarish hogi?' ya click 🎙️..." 
+            autocomplete="off"
+            required
+          >
+          
+          <button type="submit" id="sendBtn" class="btn-primary send-btn">
+            <span>Send</span>
+            <span class="send-icon">➤</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Right Column: Live Weather Cards, NWP Comparison & Live Radar -->
+    <aside class="dashboard-section">
+
+      <!-- View Switch Tabs -->
+      <div class="dash-tabs">
+        <button class="dash-tab active" data-tab="weather-view">🌤️ Live Metrics</button>
+        <button class="dash-tab" data-tab="radar-view">🗺️ Doppler Radar</button>
+        <button class="dash-tab" data-tab="nwp-view">🧮 NWP Models</button>
+        <button class="dash-tab" data-tab="climate-view">📊 Climate Trends</button>
+      </div>
+
+      <!-- Tab 1: Live Weather Metrics -->
+      <div id="weatherView" class="dash-content-pane active">
+        <!-- Current Hero Card -->
+        <div class="weather-hero-card" id="heroCard">
+          <div class="hero-top">
+            <div>
+              <h3 id="cardLocation" class="hero-city">Indore</h3>
+              <p id="cardCondition" class="hero-desc">Partly cloudy</p>
+            </div>
+            <div id="cardIcon" class="hero-icon">⛅</div>
+          </div>
+          <div class="hero-temp-row">
+            <span id="cardTemp" class="hero-temp">29°</span>
+            <span class="temp-unit">C</span>
+            <div class="hero-temp-sub">
+              <span>Feels like <b id="cardApparent">31°C</b></span>
+              <span>Rain Chance: <b id="cardPrecipChance">20%</b></span>
+            </div>
+          </div>
+
+          <!-- Quick Metrics Grid -->
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <span class="metric-label">💨 Wind</span>
+              <span id="metricWind" class="metric-val">14 km/h</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">💧 Humidity</span>
+              <span id="metricHumidity" class="metric-val">62%</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">☀️ UV Index</span>
+              <span id="metricUV" class="metric-val">6.2 (Moderate)</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">🍃 Air Quality</span>
+              <span id="metricAQI" class="metric-val">45 (Good)</span>
+            </div>
+          </div>
+
+          <!-- Active Alert Badge Card inside Widget -->
+          <div id="cardAlertBox" class="card-alert-box alert-watch">
+            <div class="alert-box-header">
+              <span class="alert-badge-icon">⚠️</span>
+              <b id="cardAlertTitle">Yellow Watch Active</b>
+            </div>
+            <p id="cardAlertDesc" class="alert-box-desc">Convective thunderstorm activity expected in evening hours.</p>
+          </div>
+        </div>
+
+        <!-- 24-Hour Forecast Strip -->
+        <div class="forecast-strip-container">
+          <h4>🕒 Hourly Forecast (Next 24 Hours)</h4>
+          <div id="hourlyStrip" class="hourly-strip">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- 7-Day Forecast Accordion -->
+        <div class="daily-forecast-container">
+          <h4>📅 7-Day Outlook</h4>
+          <div id="dailyList" class="daily-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Live Doppler Radar -->
+      <div id="radarView" class="dash-content-pane">
+        <div class="radar-header">
+          <h4>🗺️ Real-Time Doppler Precipitation Radar</h4>
+          <span class="radar-sub">Live RainViewer Radar & Precipitation Overlays</span>
+        </div>
+        <div id="radarMap" class="radar-map-container"></div>
+        <div class="radar-controls">
+          <button id="radarPlayBtn" class="radar-btn">▶ Play Radar Loop</button>
+          <span id="radarTimestamp" class="radar-time">Live Past 10 Mins</span>
+        </div>
+      </div>
+
+      <!-- Tab 3: NWP Models (ECMWF vs GFS vs ICON) -->
+      <div id="nwpView" class="dash-content-pane">
+        <div class="nwp-header">
+          <h4>🧮 Multi-Model NWP Comparison (SIH Technical Requirement)</h4>
+          <p class="nwp-sub">Simultaneous comparison across ECMWF (European Centre), GFS (NOAA), and ICON (DWD).</p>
+        </div>
+        
+        <div id="nwpCards" class="nwp-cards-grid">
+          <div class="nwp-card">
+            <div class="nwp-card-title">🇪🇺 ECMWF IFS-025</div>
+            <div class="nwp-stat">Confidence: <b class="tag-high">High</b></div>
+            <div class="nwp-stat">Tomorrow Max: <b>31.0°C</b></div>
+            <div class="nwp-stat">Rainfall: <b>2.1 mm</b></div>
+          </div>
+          <div class="nwp-card">
+            <div class="nwp-card-title">🇺🇸 GFS Seamless</div>
+            <div class="nwp-stat">Confidence: <b class="tag-high">High</b></div>
+            <div class="nwp-stat">Tomorrow Max: <b>31.2°C</b></div>
+            <div class="nwp-stat">Rainfall: <b>1.8 mm</b></div>
+          </div>
+          <div class="nwp-card">
+            <div class="nwp-card-title">🇩🇪 ICON Seamless</div>
+            <div class="nwp-stat">Confidence: <b class="tag-mod">Moderate</b></div>
+            <div class="nwp-stat">Tomorrow Max: <b>30.9°C</b></div>
+            <div class="nwp-stat">Rainfall: <b>1.5 mm</b></div>
+          </div>
+        </div>
+
+        <div class="nwp-consensus-box">
+          <b>🎯 Model Consensus:</b>
+          <p id="nwpConsensusText">Strong consensus on high temperature stability and minor afternoon shower windows.</p>
+        </div>
+      </div>
+
+      <!-- Tab 4: Historical Climate Trends -->
+      <div id="climateView" class="dash-content-pane">
+        <div class="climate-header">
+          <h4>📊 5-Year Historical Climate Analysis</h4>
+          <p class="climate-sub">Open-Meteo Historical Archive Analysis for Crop & Regional Planning</p>
+        </div>
+        <div id="climateChartBox" class="climate-chart-box">
+          <div class="climate-bars" id="climateBars">
+            <!-- Dynamic Climate Trend Bars -->
+          </div>
+        </div>
+        <div class="climate-analysis-box" id="climateAnalysisText">
+          Loading historical climate baseline...
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- App Scripts -->
+  <script src="js/voice.js"></script>
+  <script src="js/radar.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

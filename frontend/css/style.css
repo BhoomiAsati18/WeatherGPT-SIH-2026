@@ -1,0 +1,937 @@
+/* ==========================================================================
+   WeatherGPT (SIH26068) - Modern Glassmorphism Styling
+   ========================================================================== */
+
+:root {
+  --bg-primary: #0a0f1d;
+  --bg-surface: rgba(18, 25, 43, 0.75);
+  --bg-card: rgba(28, 38, 64, 0.6);
+  --bg-card-hover: rgba(38, 52, 88, 0.8);
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-indigo: #6366f1;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-green: #10b981;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glass-bright: rgba(255, 255, 255, 0.16);
+  --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background: radial-gradient(circle at 15% 15%, #131d36 0%, #080d19 100%);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Disaster Alert Ticker
+   ========================================================================== */
+.disaster-ticker {
+  background: linear-gradient(90deg, #991b1b, #b91c1c, #ea580c);
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.3);
+  z-index: 100;
+}
+
+.ticker-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ticker-badge {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.ticker-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   Header Navigation
+   ========================================================================== */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 8px rgba(6, 182, 212, 0.5));
+}
+
+.logo-text h1 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.badge-sih {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  display: block;
+}
+
+.location-pill {
+  display: flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 30px;
+  padding: 6px 14px;
+  gap: 8px;
+}
+
+.city-dropdown {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.city-dropdown option {
+  background: #0f172a;
+  color: #fff;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lang-selector {
+  display: flex;
+  background: var(--bg-card);
+  border-radius: 8px;
+  padding: 2px;
+  border: 1px solid var(--border-glass);
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: var(--accent-blue);
+  color: #fff;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+}
+
+/* ==========================================================================
+   Persona Selector Bar
+   ========================================================================== */
+.persona-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  background: rgba(15, 23, 42, 0.5);
+  border-bottom: 1px solid var(--border-glass);
+  overflow-x: auto;
+}
+
+.persona-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.persona-chips {
+  display: flex;
+  gap: 8px;
+}
+
+.persona-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.persona-chip:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-main);
+  border-color: var(--border-glass-bright);
+}
+
+.persona-chip.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.25));
+  border-color: var(--accent-cyan);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+}
+
+/* ==========================================================================
+   Main Application Layout
+   ========================================================================== */
+.app-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 20px;
+  padding: 20px 24px;
+  max-width: 1540px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ==========================================================================
+   Conversational Chat Section
+   ========================================================================== */
+.chat-section {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glow);
+  overflow: hidden;
+  height: calc(100vh - 165px);
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.chat-title h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.grounded-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-green);
+  background: rgba(16, 185, 129, 0.12);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  display: inline-block;
+  margin-top: 2px;
+}
+
+.btn-text-sm {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.btn-text-sm:hover {
+  color: #fff;
+}
+
+/* Chat Messages */
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+
+.message {
+  display: flex;
+  gap: 12px;
+  max-width: 88%;
+}
+
+.user-msg {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.assistant-msg {
+  align-self: flex-start;
+}
+
+.msg-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass-bright);
+  flex-shrink: 0;
+}
+
+.user-msg .msg-avatar {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+}
+
+.msg-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.user-msg .msg-text {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border-radius: 18px 18px 4px 18px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+}
+
+.assistant-msg .msg-text {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 18px 18px 18px 4px;
+  padding: 14px 18px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #f1f5f9;
+}
+
+.welcome-list {
+  margin: 10px 0 0 16px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.btn-tts {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.btn-tts:hover {
+  opacity: 1;
+}
+
+/* Chat Suggestion Chips */
+.suggestion-chips {
+  display: flex;
+  gap: 8px;
+  padding: 8px 18px;
+  overflow-x: auto;
+  border-top: 1px solid var(--border-glass);
+}
+
+.sug-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.sug-chip:hover {
+  background: var(--bg-card-hover);
+  color: #fff;
+  border-color: var(--accent-cyan);
+}
+
+/* Chat Input Bar */
+.chat-input-container {
+  padding: 14px 18px;
+  background: rgba(15, 23, 42, 0.7);
+  border-top: 1px solid var(--border-glass);
+}
+
+.chat-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: 28px;
+  padding: 4px 6px 4px 12px;
+  transition: border-color 0.2s;
+}
+
+.chat-form:focus-within {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+}
+
+.voice-mic-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.voice-mic-btn:hover {
+  transform: scale(1.1);
+}
+
+.voice-mic-btn.recording {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.voice-mic-btn.recording .mic-icon {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); filter: drop-shadow(0 0 8px red); }
+  100% { transform: scale(1); }
+}
+
+.chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  padding: 8px 4px;
+}
+
+.send-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  border: none;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 22px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.send-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Dashboard Section (Right Column)
+   ========================================================================== */
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glow);
+  overflow: hidden;
+  height: calc(100vh - 165px);
+}
+
+.dash-tabs {
+  display: flex;
+  background: rgba(15, 23, 42, 0.6);
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.dash-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 14px 10px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.dash-tab:hover {
+  color: #fff;
+}
+
+.dash-tab.active {
+  color: var(--accent-cyan);
+  border-bottom-color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.05);
+}
+
+.dash-content-pane {
+  display: none;
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.dash-content-pane.active {
+  display: block;
+}
+
+/* Weather Hero Card */
+.weather-hero-card {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.8));
+  border: 1px solid var(--border-glass-bright);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.hero-city {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.hero-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.hero-icon {
+  font-size: 3rem;
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.2));
+}
+
+.hero-temp-row {
+  display: flex;
+  align-items: baseline;
+  margin: 14px 0;
+  gap: 4px;
+}
+
+.hero-temp {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.temp-unit {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.hero-temp-sub {
+  margin-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.hero-temp-sub b {
+  color: #fff;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.metric-box {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.metric-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Alert Box */
+.card-alert-box {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--accent-amber);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.alert-box-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-amber);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.alert-box-desc {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  margin-top: 4px;
+}
+
+/* Hourly Strip */
+.forecast-strip-container {
+  margin-top: 20px;
+}
+
+.forecast-strip-container h4, .daily-forecast-container h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.hourly-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.hourly-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.hourly-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.hourly-icon {
+  font-size: 1.25rem;
+}
+
+.hourly-temp {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.hourly-rain {
+  font-size: 0.7rem;
+  color: #38bdf8;
+}
+
+/* Daily List */
+.daily-forecast-container {
+  margin-top: 20px;
+}
+
+.daily-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.daily-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+}
+
+.daily-day {
+  font-weight: 600;
+  width: 90px;
+}
+
+.daily-cond {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+
+.daily-temps {
+  font-weight: 700;
+}
+
+.temp-min {
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+/* Radar Tab */
+.radar-map-container {
+  width: 100%;
+  height: 380px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-glass-bright);
+  margin-top: 10px;
+}
+
+.radar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.radar-btn {
+  background: var(--accent-blue);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.radar-time {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* NWP Tab */
+.nwp-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.nwp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nwp-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.nwp-stat {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.tag-high {
+  color: var(--accent-green);
+}
+
+.tag-mod {
+  color: var(--accent-amber);
+}
+
+.nwp-consensus-box {
+  background: rgba(59, 130, 246, 0.1);
+  border-left: 4px solid var(--accent-blue);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+}
+
+/* Climate Tab */
+.climate-chart-box {
+  margin: 18px 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.climate-bars {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 180px;
+  gap: 12px;
+}
+
+.climate-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.climate-bar-fill {
+  width: 100%;
+  max-width: 42px;
+  background: linear-gradient(180deg, var(--accent-cyan), var(--accent-blue));
+  border-radius: 6px 6px 0 0;
+  transition: height 0.5s ease;
+}
+
+.climate-bar-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.climate-bar-year {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.climate-analysis-box {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+  .chat-section, .dashboard-section {
+    height: auto;
+    min-height: 520px;
+  }
+  .nwp-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

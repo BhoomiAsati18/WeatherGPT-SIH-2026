@@ -5,7 +5,7 @@
 ---
 
 ## 📌 Project Overview
-**WeatherGPT** solves the **"last mile"** meteorological dissemination problem. India has vast amounts of weather data (IMD bulletins, Mausam app, Doppler radar, satellite imagery), but for an ordinary citizen, farmer, or traveler, this scattered technical data is difficult to interpret and act upon.
+**WeatherGPT** solves the **"last mile"** meteorological dissemination problem. India has vast amounts of weather data (IMD bulletins, Mausam app, Doppler radar, satellite imagery), but for an ordinary citizen, farmer, or traveler, this scatter technical data is difficult to interpret and act upon it and present it.
 
 WeatherGPT provides an **authoritative, conversational AI layer** that:
 1. Understands natural language voice and text queries in **Hindi, Hinglish, and English**.
